@@ -1,3 +1,4 @@
+package game;
 import javafx.beans.property.StringProperty;
 
 public class Conversation {
