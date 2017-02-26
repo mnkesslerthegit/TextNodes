@@ -1,21 +1,17 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
 
 import javafx.application.Application;
-import javafx.beans.property.SimpleStringProperty;
+
 import javafx.beans.property.StringProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Border;
+
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
+
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -45,9 +41,7 @@ public class UserInterface extends Application {
 	}
 
 	@Override
-	public void start(Stage primaryStage) {
-
-		
+	public void start(Stage primaryStage) {	
 
 		primaryStage.setTitle("Hello World!");
 		// assuming you have defined a StringProperty called "valueProperty"
@@ -74,11 +68,11 @@ public class UserInterface extends Application {
 	
 	//	grid.setStyle("-fx-grid-lines-visible: true");
 	//	grid.getStyleClass().add("grid-pane");
-		System.out.println(grid.getStyle() + "fuck you gumby"); 
+	//	System.out.println(grid.getStyle() + "fuck you gumby"); 
 		
 		Scene scene = new Scene(grid, 300, 300, Color.BLACK);
 	//	System.out.println(scene.getStylesheets().add("testStyle.css"));
-		scene.getStylesheets().add("testStyle.css");
+		System.out.println(scene.getStylesheets().add("testStyle.css"));
 		// GridPane.setConstraints(textField, (int) root.getWidth()/20, 0);
 		
 		//GridPane.setConstraints(myLabel, 0, 20);
