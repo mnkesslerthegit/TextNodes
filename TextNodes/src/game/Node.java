@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Hoplds 
+ * Will use this to build decision trees. 
  * @author Max
  *
  */

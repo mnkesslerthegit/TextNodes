@@ -25,15 +25,7 @@ public class Ask extends Application {
 	GridPane grid = new GridPane();
 
 	public static void main(String[] args) {
-		// //create node system from file
-		// try {
-		// Node myNode = new Node(readFile("text"));
-		// } catch (Exception e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// // System.out.print("order of things?");
-		// Conversation myConversation = new Conversation()
+
 		launch(args);
 
 	}
@@ -53,62 +45,76 @@ public class Ask extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
+
+		StaxWriter configFile = new StaxWriter();
+		configFile.setFile("config.xml");
+		try {
+			configFile.saveConfig();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
 		
+		 StaXParser read = new StaXParser();
+         List<Item> readConfig = read.readConfig("config.xml");
+         for (Item item : readConfig) {
+                 System.out.println(item);
+         }
+
 		primaryStage.setTitle("Hello World!");
-		
+
 		primaryStage.setScene(guiStuff());
 		primaryStage.show();
 
-	
-
 	}
 
+	/**
+	 * Creates a label and adds it to the gird. Adds a style sheet to the scene
+	 * Adds an event listener to our textField which sends its text into the
+	 * label.
+	 * 
+	 * @return
+	 */
 	private Scene guiStuff() {
-		// assuming you have defined a StringProperty called "valueProperty"
-		Label myLabel = new Label("Start");
-		// myLabel.textProperty().bind(inputProperty());
-		setInput("this somehow works?");
 
-		// StackPane root = new StackPane();
-		// root.getChildren().add(grid);
+		Label myLabel = new Label("Start");
+
+		setInput("this somehow works?");
+		
 
 		grid.setPadding(new Insets(10, 10, 10, 10));
 		grid.setVgap(5);
 		grid.setHgap(5);
-		// grid.gridLinesVisibleProperty().set(true);
 		GridPane.setHalignment(myLabel, HPos.CENTER);
 		GridPane.setValignment(myLabel, VPos.CENTER);
-
 		grid.add(textField, 0, 0);
 		grid.add(myLabel, 0, 1);
-		// System.out.println(grid.getStyle() + "fuck you gumby"); THIS IS NULL
-		// System.out.println(grid.getStylesheets().get(0)); ALSO NULL
-		// grid.getStylesheets().add("testStyle.css");
-
-		// grid.setStyle("-fx-grid-lines-visible: true");
-		// grid.getStyleClass().add("grid-pane");
-		// System.out.println(grid.getStyle() + "fuck you gumby");
-
 		Scene scene = new Scene(grid, 300, 300, Color.BLACK);
-
-		// System.out.println(scene.getStylesheets().add("testStyle.css"));
 		System.out.println(scene.getStylesheets().add("testStyle.css"));
-		// GridPane.setConstraints(textField, (int) root.getWidth()/20, 0);
 
-		// GridPane.setConstraints(myLabel, 0, 20);
 		textField.textProperty().addListener((observable, oldValue, newValue) -> {
 			// System.out.println("textfield changed from " + oldValue + " to "
 			// + newValue);
+
+			/**
+			 * The following line calls a final method from a local variable.
+			 * The variable will be garbage collected shortly. Apparently, the
+			 * method is lifted from it somehow. Additionally, I can pass local
+			 * variables to a as parameters, but I can't change their values.
+			 * This is because the add listener never sees those variables, only
+			 * their values. Does the same logic apply to the final method?
+			 * 
+			 */
 			myLabel.textProperty().set(newValue);
-		
+			// System.out.println(num);
+			// wtf(num);
 
 		});
 
 		return scene;
 
 	}
-	
-	
 
 	private static List<String> readFile(String filename) throws Exception {
 		String line = null;

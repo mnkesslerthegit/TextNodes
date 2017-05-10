@@ -1,17 +1,16 @@
 package game;
+import java.util.Observable;
+import java.util.Observer;
+
 import javafx.beans.property.StringProperty;
 
-public class Conversation {
-	StringProperty myInput;
+public class Conversation implements Observer {
+	
 
-	public Conversation(StringProperty input) {
-		myInput = input;
-		myInput.addListener((observable, oldValue, newValue) -> {
-			 System.out.println("textfield changed from " + oldValue + " to "
-			 + newValue);
-			input.set(newValue);
-		});
-
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		
+		
 	}
 
 }
