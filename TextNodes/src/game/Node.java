@@ -15,6 +15,7 @@ import javafx.beans.value.ObservableValue;
  *
  */
 public class Node implements Serializable {
+	
 
 	// public static boolean running = true;
 	Node parent;
@@ -47,6 +48,16 @@ public class Node implements Serializable {
 	public void setAnswerData(String value) {
 		answer.set(value);
 	}
+	
+	public Node(String message){
+		answer.setValue(message);
+	}
+	
+	/**
+	 * Default constructor means responsibility for node relations 
+	 * lies on the classes using it
+	 */
+	public Node(){};
 
 	public ArrayList<Node> choices = new ArrayList<Node>();
 
