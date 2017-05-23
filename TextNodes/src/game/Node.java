@@ -49,6 +49,13 @@ public class Node implements Serializable {
 		answer.set(value);
 	}
 	
+//	public Node(String message, Node parent)
+//	{
+//		parent.choices.add(this);
+//		this.answer.setValue(message);
+//	}
+	
+	
 	public Node(String message){
 		answer.setValue(message);
 	}

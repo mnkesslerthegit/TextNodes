@@ -5,9 +5,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
+import edits.addAnswerEdit;
 import javafx.application.Application;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -36,6 +39,12 @@ public class Ask extends Application {
 	private static Node myNode = new Node();
 	private static int childNumber = 0;
 
+	/**
+	 * undo system elements
+	 */
+	UndoCollector undoManager_; // history list
+	UndoableEditSupport undoSupport_; // event support
+
 	public static void main(String[] args) {
 
 		launch(args);
@@ -43,7 +52,9 @@ public class Ask extends Application {
 	}
 
 	/**
-	 * I'm not sure if these methods should be here.
+	 * I'm not sure if these methods should be here. I put them here before I
+	 * made the node class: I needed a place to put a string property when I was
+	 * experimenting with listeners
 	 * 
 	 * @param value
 	 */
@@ -80,12 +91,12 @@ public class Ask extends Application {
 	private Scene guiStuff() {
 
 		Label myLabel = new Label("Start");
-		
+
 		/**
 		 * I tried to make it so the string contained in myNode shows up on in
-		 * the GUI. It didn't work. It stayed with the original node. 
+		 * the GUI. It didn't work. It stayed with the original node.
 		 */
-	//	nodeData.textProperty().bind(myNode.dataProperty());
+		// nodeData.textProperty().bind(myNode.dataProperty());
 
 		myNode.setQuestionData("Begin Conversation");
 
@@ -97,7 +108,7 @@ public class Ask extends Application {
 		GridPane.setHalignment(myLabel, HPos.CENTER);
 		GridPane.setValignment(myLabel, VPos.CENTER);
 		grid.add(questions, 0, 0);
-		grid.add(myLabel, 0, 1);		
+		grid.add(myLabel, 0, 1);
 		grid.add(questionDisplay, 0, 2);
 		grid.add(answerDisplay, 0, 3);
 		grid.add(answers, 0, 4);
@@ -105,46 +116,32 @@ public class Ask extends Application {
 		Scene scene = new Scene(grid, 300, 300, Color.BLACK);
 		System.out.println(scene.getStylesheets().add("testStyle.css"));
 
-		questions.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent event) {
-				System.out.println("IMA HANDEL IT");
-				updateDisplay();
-				switch (event.getCode()) {
-				case UP:
-					up();
-					break;
-				case DOWN:
-					down();
-					break;
-				// case RIGHT:
-				// right();
-				// break;
-				// case LEFT:
-				// left();
-				// break;
-				default:
-					break;
+		/**
+		 * Add an answer
+		 */
+		addAnswerAction addAnswer = new addAnswerAction();
+		answers.addEventHandler(ActionEvent.ACTION, addAnswer);
+		// answers
 
-				}
-			}
+		//
+		// answers.setOnAction((new EventHandler<ActionEvent>() {
+		// @Override
+		// public void handle(ActionEvent e) {
+		// // label.setText("Accepted");
+		// System.out.println("I DID IT");
+		// addNode(answers.textProperty().getValue());
+		// updateDisplay();
+		// }
+		//
+		// public String toString() {
+		// return "I got this to print, to see if I could.";
+		// }
+		// }));
 
-		});
-
-		answers.setOnAction((new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				// label.setText("Accepted");
-				System.out.println("I DID IT");
-				addNode(answers.textProperty().getValue());
-				updateDisplay();
-			}
-
-			public String toString() {
-				return "I got this to print, to see if I could.";
-			}
-		}));
-
+		/**
+		 * This is to test my understanding of listeners, and can eventually be
+		 * developed to show the user the answers they can type in
+		 */
 		questions.textProperty().addListener((observable, oldValue, newValue) -> {
 			// System.out.println("textfield changed from " + oldValue + " to "
 			// + newValue);
@@ -191,19 +188,113 @@ public class Ask extends Application {
 		//
 		// System.out.println(questions.getOnAction());
 
+		/**
+		 * Here I handle commands that aren't related to any textfield, but
+		 * allow the user to navigate between nodes
+		 */
+		scene.addEventHandler(KeyEvent.ANY, new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				// System.out.println("Thigns are going ok");
+				switch (event.getCode()) {
+				case UP:
+					up();
+					break;
+				case DOWN:
+					down();
+					break;
+					
+				// case RIGHT:
+				// right();
+				// break;
+				// case LEFT:
+				// left();
+				// break;
+				default:
+					break;
+
+				}
+				updateDisplay();
+				
+			}
+			
+			
+		});
+
+		// TODO
+		 undoManager_ = UndoCollector.INSTANCE;
+		 undoSupport_ = new UndoableEditSupport();
+		// undoSupport_.addUndoableEditListener(new UndoAdapter());
+
 		return scene;
+
+	}
+
+	/**
+	 * These inner classes are the commands. The should be able to attach
+	 * themselves to the buttons and stuff. They create edit objects, like
+	 * addAnswer edit, which holds a record that the action occured. I think in
+	 * javafx, they should be event handlers? At first ,I tried making them
+	 * abstract actions, but I didnt' want to use swing, because I heard it was
+	 * old or something.
+	 */
+	private class addAnswerAction implements EventHandler<ActionEvent> {
+		// @Override
+		// public void actionPerformed(ActionEvent evt) {
+		// always add to the end of the JList
+		// int NumOfElements = elementModel_.getSize();
+		// however, give the the element is ID number
+		// Object element = new String("Foo " + _lastElementID);
+		//
+		//
+		// record the effect
+		// UndoableEdit edit = new addAnswerEdit(elementModel_,
+		// element, NumOfElements );
+		// perform the operation
+		// elementModel_.addElement( element );
+		//
+		// notify the listeners
+		// undoSupport_.postEdit( edit );
+		//
+		// increment the ID
+		// _lastElementID ++ ;
+		// System.out.println("The event is: " + evt);
+		// }
+
+		@Override
+		public void handle(ActionEvent event) {
+			// record the effect
+			addAnswerEdit edit = new addAnswerEdit(myNode, myNode.choices.size(), answers.getText());
+			System.out.println("addAnswer action was TRIGGERED: " + answers.getText());
+			
+			// perform the operation
+			myNode.addChild(answers.getText());
+			
+			// put the effect in the list with listeners?
+			undoSupport_.postEdit( edit );
+			
+		}
+
+	}
+
+	private class UndoAdapter {
+		// public void undoableEditHappened(UndoableEditEvent evt) {
+		// UndoableEdit edit = evt.getEdit();
+		// undoManager_.addEdit(edit);
+		// // refreshUndoRedo();
+		// }
 
 	}
 
 	private void addNode(String message) {
 		myNode.addChild(message);
-		System.out.println("Added node. Current number of children: " + myNode.choices.size());		
+		System.out.println("Added node. Current number of children: " + myNode.choices.size());
 
 	}
-	
-	public void updateDisplay(){		
+
+	public void updateDisplay() {
 		String answers = "";
-		for(Node n : myNode.choices){
+		for (Node n : myNode.choices) {
 			answers += n.getAnswerData();
 			answers += "     ";
 		}
@@ -230,18 +321,20 @@ public class Ask extends Application {
 		if (childNumber < myNode.choices.size()) {
 			myNode = myNode.choices.get(childNumber);
 			System.out.println("Set node to child");
-		
+
 		} else {
 			System.out.println("Could not find child");
 		}
 		childNumber = 0;
 
-	}	
+	}
 
 	public void up() {
 		if (myNode.parent != null) {
 			myNode = myNode.parent;
 			System.out.println("set node to parent");
+		}else{
+			System.out.println("Could not find parent");
 		}
 
 		if (myNode.choices.size() > childNumber) {

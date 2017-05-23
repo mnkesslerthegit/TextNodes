@@ -6,28 +6,29 @@ import javax.swing.undo.CannotUndoException;
 
 import game.Node;
 
-public class removeQuestionEdit implements Edit {
+public class removeAnswerEdit implements Edit {
 
 	Node myNode;
 	String data;	
+	int target;
 	
-	boolean question; //true if its a question, false if its an answer
-
-	public removeQuestionEdit(Node target, String data) {
-		myNode = target;
-		
+	
+	public removeAnswerEdit(Node parent, int target, String data) {
+		myNode = parent;
+		this.target = target;
 		this.data = data;
 		
 	}
 
 	public void undo() throws CannotUndoException {
 		
-		myNode.questionProperty().setValue(data);
+		myNode.choices.add(new Node(data));
 		
 	}
 
 	public void redo() throws CannotRedoException {
-		myNode.questionProperty().set("");
+		
+		myNode.choices.remove(target);
 	}
 
 	public boolean canUndo() {

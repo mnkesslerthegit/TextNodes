@@ -1,4 +1,4 @@
-package commands;
+package edits;
 
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
@@ -6,7 +6,7 @@ import javax.swing.undo.CannotUndoException;
 
 import game.Node;
 
-public class addQuestionEdit extends AbstractUndoableEdit {
+public class addQuestionEdit implements Edit {
 
 	Node myNode;
 	String data;	
@@ -35,6 +35,12 @@ public class addQuestionEdit extends AbstractUndoableEdit {
 
 	public boolean canRedo() {
 		return true;
+	}
+
+	@Override
+	public String getUndoRedoName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
