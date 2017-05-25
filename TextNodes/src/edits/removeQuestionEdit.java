@@ -1,8 +1,5 @@
 package edits;
 
-import javax.swing.undo.AbstractUndoableEdit;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
 
 import game.Node;
 
@@ -20,23 +17,24 @@ public class removeQuestionEdit implements Edit {
 		
 	}
 
-	public void undo() throws CannotUndoException {
+	
+
+
+	@Override
+	public void undo() {
+		// TODO Auto-generated method stub
 		
-		myNode.questionProperty().setValue(data);
+	}
+
+
+	@Override
+	public void redo() {
+		// TODO Auto-generated method stub
 		
 	}
 
-	public void redo() throws CannotRedoException {
-		myNode.questionProperty().set("");
-	}
 
-	public boolean canUndo() {
-		return true;
-	}
 
-	public boolean canRedo() {
-		return true;
-	}
 
 	@Override
 	public String getUndoRedoName() {

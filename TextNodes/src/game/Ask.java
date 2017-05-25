@@ -7,17 +7,22 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import edits.addAnswerEdit;
+import edits.addQuestionEdit;
 import javafx.application.Application;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
+
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -43,7 +48,9 @@ public class Ask extends Application {
 	 * undo system elements
 	 */
 	UndoCollector undoManager_; // history list
-	UndoableEditSupport undoSupport_; // event support
+
+	// I don't know how undosupport was supposed to work.
+	// UndoableEditSupport undoSupport_; // event support
 
 	public static void main(String[] args) {
 
@@ -76,20 +83,6 @@ public class Ask extends Application {
 
 		primaryStage.setTitle("Hello World!");
 
-		primaryStage.setScene(guiStuff());
-		primaryStage.show();
-
-	}
-
-	/**
-	 * Creates a label and adds it to the gird. Adds a style sheet to the scene
-	 * Adds an event listener to our textField which sends its text into the
-	 * label.
-	 * 
-	 * @return
-	 */
-	private Scene guiStuff() {
-
 		Label myLabel = new Label("Start");
 
 		/**
@@ -100,45 +93,75 @@ public class Ask extends Application {
 
 		myNode.setQuestionData("Begin Conversation");
 
-		setInput("this somehow works?");
+		// setInput("this somehow works?");
 
 		grid.setPadding(new Insets(10, 10, 10, 10));
 		grid.setVgap(5);
 		grid.setHgap(5);
+	//	grid.borderProperty().set(10);
 		GridPane.setHalignment(myLabel, HPos.CENTER);
 		GridPane.setValignment(myLabel, VPos.CENTER);
 		grid.add(questions, 0, 0);
-		grid.add(myLabel, 0, 1);
+	//	grid.add(myLabel, 0, 1);
 		grid.add(questionDisplay, 0, 2);
 		grid.add(answerDisplay, 0, 3);
 		grid.add(answers, 0, 4);
 		// grid.add(new TextField(), 0, 3);
 		Scene scene = new Scene(grid, 300, 300, Color.BLACK);
-		System.out.println(scene.getStylesheets().add("testStyle.css"));
+		scene.getStylesheets().add("testStyle.css");
 
 		/**
 		 * Add an answer
 		 */
 		addAnswerAction addAnswer = new addAnswerAction();
 		answers.addEventHandler(ActionEvent.ACTION, addAnswer);
-		// answers
-
-		//
-		// answers.setOnAction((new EventHandler<ActionEvent>() {
-		// @Override
-		// public void handle(ActionEvent e) {
-		// // label.setText("Accepted");
-		// System.out.println("I DID IT");
-		// addNode(answers.textProperty().getValue());
-		// updateDisplay();
-		// }
-		//
-		// public String toString() {
-		// return "I got this to print, to see if I could.";
-		// }
-		// }));
-
+		
 		/**
+		 * add questions
+		 */
+		addQuestionAction addQuestion = new addQuestionAction();
+		questions.addEventHandler(ActionEvent.ACTION,addQuestion);
+
+		undoManager_ = UndoCollector.INSTANCE;
+		
+		/**
+		 * I couln't figure out how undoSupport was supposed to work, 
+		 * so I'm just going have my commands register themselves with the undo manager directly. 
+		 */
+		//undoSupport_ = new UndoableEditSupport();
+		//undoSupport_.
+		// undoSupport_.addUndoableEditListener(new UndoAdapter());
+
+		
+		
+		/*
+		 * this didn't work, because the accelerator map wasn't getting the
+		 * events. I needed to use an event filter instead, and that didn't end
+		 * up using the accelerator map. Something's dumb here.
+		 * 
+		 * scene.getAccelerators().put(new KeyCodeCombination(KeyCode.A,
+		 * KeyCombination.CONTROL_ANY), new Runnable() {
+		 * 
+		 * @Override public void run() { // TODO have this not break command
+		 * design pattern undoManager_.undo(); System.out.println(
+		 * "At least it works");
+		 * 
+		 * } });
+		 * 
+		 */
+
+		/*
+		 * // answers.setOnAction((new EventHandler<ActionEvent>() {
+		 * // @Override // public void handle(ActionEvent e) { // //
+		 * label.setText("Accepted"); // System.out.println("I DID IT"); //
+		 * addNode(answers.textProperty().getValue()); // updateDisplay(); // }
+		 * // // public String toString() { // return
+		 * "I got this to print, to see if I could."; // } // }));
+		 * 
+		 */
+
+		/*
+		 * 
 		 * This is to test my understanding of listeners, and can eventually be
 		 * developed to show the user the answers they can type in
 		 */
@@ -165,21 +188,19 @@ public class Ask extends Application {
 
 		});
 
-		/**
+		/*
 		 * The following is pointless, and is me experimenting with event
 		 * handlers
+		 * 
+		 * questions.setOnAction(new EventHandler<ActionEvent>() {
+		 * 
+		 * @Override public void handle(ActionEvent e) { //
+		 * label.setText("Accepted"); System.out.println("I DID IT"); }
+		 * 
+		 * public String toString() { return
+		 * "I got this to print, to see if I could."; } });
+		 * 
 		 */
-		// questions.setOnAction(new EventHandler<ActionEvent>() {
-		// @Override
-		// public void handle(ActionEvent e) {
-		// // label.setText("Accepted");
-		// System.out.println("I DID IT");
-		// }
-		//
-		// public String toString() {
-		// return "I got this to print, to see if I could.";
-		// }
-		// });
 
 		/**
 		 * This method returns the instance of the anonymous class! Praise the
@@ -191,8 +212,13 @@ public class Ask extends Application {
 		/**
 		 * Here I handle commands that aren't related to any textfield, but
 		 * allow the user to navigate between nodes
+		 * 
+		 * I changed this from event handler to event filter so that it always
+		 * gets notified. Textfields apparently consume key events, but not all
+		 * of them. Maybe only key pressed events? I don't know. Cause if they
+		 * consumed all the events, it wouldn't have worked at all.
 		 */
-		scene.addEventHandler(KeyEvent.ANY, new EventHandler<KeyEvent>() {
+		scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
 				// System.out.println("Thigns are going ok");
@@ -203,7 +229,7 @@ public class Ask extends Application {
 				case DOWN:
 					down();
 					break;
-					
+
 				// case RIGHT:
 				// right();
 				// break;
@@ -214,19 +240,21 @@ public class Ask extends Application {
 					break;
 
 				}
+
+				KeyCodeCombination undoCombo = new KeyCodeCombination(KeyCode.Z, KeyCombination.CONTROL_DOWN);
+				if (undoCombo.match(event)) {
+					System.out.println("yeah, you can undo things maybe");
+					undoManager_.undo();
+				}
+
 				updateDisplay();
-				
+
 			}
-			
-			
+
 		});
-
-		// TODO
-		 undoManager_ = UndoCollector.INSTANCE;
-		 undoSupport_ = new UndoableEditSupport();
-		// undoSupport_.addUndoableEditListener(new UndoAdapter());
-
-		return scene;
+		primaryStage.setScene(scene);
+		primaryStage.show();
+		// primaryStage.requestFocus();
 
 	}
 
@@ -266,25 +294,45 @@ public class Ask extends Application {
 			// record the effect
 			addAnswerEdit edit = new addAnswerEdit(myNode, myNode.choices.size(), answers.getText());
 			System.out.println("addAnswer action was TRIGGERED: " + answers.getText());
-			
+
 			// perform the operation
 			myNode.addChild(answers.getText());
-			
-			// put the effect in the list with listeners?
-			undoSupport_.postEdit( edit );
-			
+
+			// put the effect in the list with listeners? couldn't figure this
+			// out
+			// undoSupport_.postEdit(edit);
+
+			// instead I just add the edit right to the undo manager
+			undoManager_.add(edit);
+
 		}
 
 	}
 
-	private class UndoAdapter {
-		// public void undoableEditHappened(UndoableEditEvent evt) {
-		// UndoableEdit edit = evt.getEdit();
-		// undoManager_.addEdit(edit);
-		// // refreshUndoRedo();
-		// }
+	class addQuestionAction implements EventHandler<ActionEvent> {
+
+		@Override
+		public void handle(ActionEvent event) {
+			addQuestionEdit edit = new addQuestionEdit(myNode, questions.getText());
+			System.out.println("addQuestion action happened: " + questions.getText());
+
+			// perform the operation
+			myNode.questionProperty().set(questions.getText());
+
+			undoManager_.add(edit);
+
+		}
 
 	}
+
+	// private class UndoAdapter {
+	// // public void undoableEditHappened(UndoableEditEvent evt) {
+	// // UndoableEdit edit = evt.getEdit();
+	// // undoManager_.addEdit(edit);
+	// // // refreshUndoRedo();
+	// // }
+	//
+	// }
 
 	private void addNode(String message) {
 		myNode.addChild(message);
@@ -333,7 +381,7 @@ public class Ask extends Application {
 		if (myNode.parent != null) {
 			myNode = myNode.parent;
 			System.out.println("set node to parent");
-		}else{
+		} else {
 			System.out.println("Could not find parent");
 		}
 

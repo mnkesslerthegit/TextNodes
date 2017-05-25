@@ -42,7 +42,7 @@ public class UndoCollector {
 			if(undo.size()==sizeMax) {
 				undo.removeLast();
 			}
-
+			System.out.println("Added an edit");
 			undo.push(undoable);
 			redo.clear(); /* The redoable objects must be removed. */
 		}
@@ -56,7 +56,9 @@ public class UndoCollector {
 			final Edit undoable = undo.pop();
 			undoable.undo();
 			redo.push(undoable);
+			System.out.println("tried to undo");
 		}
+		System.out.println("Undo is empty");
 	}
 
 	/**
