@@ -222,6 +222,7 @@ public class Ask extends Application {
 			@Override
 			public void handle(KeyEvent event) {
 				// System.out.println("Thigns are going ok");
+				System.out.println("Child number is: " + childNumber);
 				switch (event.getCode()) {
 				case UP:
 					up();
@@ -242,9 +243,19 @@ public class Ask extends Application {
 				}
 
 				KeyCodeCombination undoCombo = new KeyCodeCombination(KeyCode.Z, KeyCombination.CONTROL_DOWN);
+				KeyCodeCombination shiftRightCombo = new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.SHIFT_DOWN);
+				KeyCodeCombination shiftLeftCombo = new KeyCodeCombination(KeyCode.LEFT, KeyCombination.SHIFT_DOWN);
 				if (undoCombo.match(event)) {
 					System.out.println("yeah, you can undo things maybe");
 					undoManager_.undo();
+				}
+				
+				if(shiftRightCombo.match(event)){
+					right();
+				}
+				
+				if(shiftLeftCombo.match(event)){
+					left();
 				}
 
 				updateDisplay();
@@ -354,11 +365,14 @@ public class Ask extends Application {
 		if (childNumber != 0) {
 			childNumber--;
 		}
+		System.out.println("Left shift; Child number: " + childNumber);
 
 	}
 
 	private void right() {
 		childNumber++;
+		System.out.println("Right shift; Child number: " + childNumber);
+
 
 	}
 
@@ -373,7 +387,7 @@ public class Ask extends Application {
 		} else {
 			System.out.println("Could not find child");
 		}
-		childNumber = 0;
+		
 
 	}
 
@@ -385,9 +399,6 @@ public class Ask extends Application {
 			System.out.println("Could not find parent");
 		}
 
-		if (myNode.choices.size() > childNumber) {
-			childNumber = myNode.choices.size() - 1;
-		}
 	}
 
 	/**
