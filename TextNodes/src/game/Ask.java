@@ -20,6 +20,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -41,8 +43,17 @@ public class Ask extends Application {
 	GridPane grid = new GridPane();
 	Label answerDisplay = new Label();
 	Label questionDisplay = new Label();
-	private static Node myNode = new Node();
+	private static Node myNode = new Node("Start");
 	private static int childNumber = 0;
+	
+	/**
+	 * Instantiate tree view class 
+	 * defined tree item objects
+	 * make one item the root
+	 * add the root to the tree view 
+	 * 
+	 */
+	
 
 	/**
 	 * undo system elements
@@ -91,7 +102,7 @@ public class Ask extends Application {
 		 */
 		// nodeData.textProperty().bind(myNode.dataProperty());
 
-		myNode.setQuestionData("Begin Conversation");
+	//	myNode.setQuestionData("Begin Conversation");
 
 		// setInput("this somehow works?");
 
@@ -106,6 +117,12 @@ public class Ask extends Application {
 		grid.add(questionDisplay, 0, 2);
 		grid.add(answerDisplay, 0, 3);
 		grid.add(answers, 0, 4);
+		
+		//TreeItem<String> rootItem = new TreeItem<String> ();
+		 TreeView<String> tree = new TreeView<String> (myNode); 
+		 grid.add(tree, 2, 0);
+		
+		
 		// grid.add(new TextField(), 0, 3);
 		Scene scene = new Scene(grid, 300, 300, Color.BLACK);
 		scene.getStylesheets().add("testStyle.css");
@@ -183,6 +200,7 @@ public class Ask extends Application {
 			 */
 			myLabel.textProperty().set(newValue);
 			updateDisplay();
+			
 			// System.out.println(num);
 			// wtf(num);
 
@@ -303,11 +321,12 @@ public class Ask extends Application {
 		@Override
 		public void handle(ActionEvent event) {
 			// record the effect
-			addAnswerEdit edit = new addAnswerEdit(myNode, myNode.choices.size(), answers.getText());
+			addAnswerEdit edit = new addAnswerEdit(myNode, myNode.getChildren().size(), answers.getText());
 			System.out.println("addAnswer action was TRIGGERED: " + answers.getText());
 
 			// perform the operation
-			myNode.addChild(answers.getText());
+			//myNode.addChild(answers.getText());
+			myNode.getChildren().add(new Node(answers.getText()));
 
 			// put the effect in the list with listeners? couldn't figure this
 			// out
@@ -328,7 +347,9 @@ public class Ask extends Application {
 			System.out.println("addQuestion action happened: " + questions.getText());
 
 			// perform the operation
-			myNode.questionProperty().set(questions.getText());
+			//myNode.questionProperty().set(questions.getText());
+			myNode.valueProperty().set(questions.getText());
+			
 
 			undoManager_.add(edit);
 
@@ -346,19 +367,22 @@ public class Ask extends Application {
 	// }
 
 	private void addNode(String message) {
-		myNode.addChild(message);
-		System.out.println("Added node. Current number of children: " + myNode.choices.size());
+		//myNode.addChild(message);
+		myNode.getChildren().add(new Node(message));
+		System.out.println("Added node. Current number of children: " + myNode.getChildren().size());
 
 	}
 
+	//TODO: Change this so that we see the whole tree
 	public void updateDisplay() {
 		String answers = "";
-		for (Node n : myNode.choices) {
-			answers += n.getAnswerData();
+		//TODO: Is it ok that children are not recognized as Nodes here?
+		for (TreeItem<String> n : myNode.getChildren()) {
+			answers += n.getValue();
 			answers += "     ";
 		}
 		answerDisplay.setText(answers);
-		questionDisplay.setText(myNode.getQuestionData());
+		questionDisplay.setText(myNode.getValue());
 	}
 
 	private void left() {
@@ -380,8 +404,9 @@ public class Ask extends Application {
 	 * Move into a child node. childNumber is set to 0.
 	 */
 	public void down() {
-		if (childNumber < myNode.choices.size()) {
-			myNode = myNode.choices.get(childNumber);
+		if (childNumber < myNode.getChildren().size()) {
+			//TODO: Is it ok that there's a cast here?
+			myNode = (Node) myNode.getChildren().get(childNumber);
 			System.out.println("Set node to child");
 
 		} else {
@@ -392,14 +417,16 @@ public class Ask extends Application {
 	}
 
 	public void up() {
-		if (myNode.parent != null) {
-			myNode = myNode.parent;
+		if (myNode.getParent() != null) {
+			myNode = (Node) myNode.getParent();
 			System.out.println("set node to parent");
 		} else {
 			System.out.println("Could not find parent");
 		}
 
 	}
+	
+	
 
 	/**
 	 * currently loads a single node containing dialogue from a text file
@@ -425,11 +452,11 @@ public class Ask extends Application {
 	 * save the current node
 	 */
 	public static final void save() {
-		Node s1 = new Node();
-		Node other = new Node();
+		Node s1 = new Node("");
+		Node other = new Node("");
 		// other.num = 8;
 		// other.next = s1;
-		s1.choices.add(other);
+		s1.getChildren().add(other);
 		FileOutputStream fout;
 		try {
 			fout = new FileOutputStream("f.txt");

@@ -9,24 +9,26 @@ import game.Node;
 public class addQuestionEdit implements Edit {
 
 	Node myNode;
-	String data;	
+	String newData;	
+	String oldData;
 	
 	
 	public addQuestionEdit(Node target, String data) {
 		myNode = target;
-		
-		this.data = data;
+		oldData = myNode.getValue();
+		newData = data;
 		
 	}
 
 	public void undo() throws CannotUndoException {
 		
-		myNode.questionProperty().setValue("");
+		//myNode.questionProperty().setValue("");
+		myNode.setValue(oldData);
 		
 	}
 
 	public void redo() throws CannotRedoException {
-		myNode.questionProperty().set(data);
+		myNode.setValue(newData);
 	}
 
 	public boolean canUndo() {

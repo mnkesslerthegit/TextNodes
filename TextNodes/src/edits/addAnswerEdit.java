@@ -26,14 +26,16 @@ public class addAnswerEdit implements Edit {
 	public void undo() //throws CannotUndoException 
 	{
 		
-		myNode.choices.remove(target);
+		//myNode.choices.remove(target);
+		myNode.getChildren().remove(target);
 		
 	}
 
 	//TODO: currently can only add node to end of list
 	public void redo()// throws CannotRedoException 
 	{
-		myNode.choices.add(new Node(data));
+		//myNode.choices.add(new Node(data));
+		myNode.getChildren().add(new Node(data));
 	}
 
 	public boolean canUndo() {

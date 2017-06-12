@@ -22,13 +22,13 @@ public class removeAnswerEdit implements Edit {
 
 	public void undo() throws CannotUndoException {
 		
-		myNode.choices.add(new Node(data));
+		myNode.getChildren().add(new Node(data));
 		
 	}
 
 	public void redo() throws CannotRedoException {
 		
-		myNode.choices.remove(target);
+		myNode.getChildren().remove(target);
 	}
 
 	public boolean canUndo() {

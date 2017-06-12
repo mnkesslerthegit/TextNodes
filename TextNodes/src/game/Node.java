@@ -7,6 +7,7 @@ import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.TreeItem;
 
 /**
  * Represents one piece of dialogue, and its correspoinding responses
@@ -14,71 +15,17 @@ import javafx.beans.value.ObservableValue;
  * @author Max
  *
  */
-public class Node implements Serializable {
+public class Node extends TreeItem<String> implements Serializable {
 	
 
-	// public static boolean running = true;
-	Node parent;
-
-	private StringProperty question = new SimpleStringProperty();
-	private StringProperty answer = new SimpleStringProperty();
-
-	public StringProperty questionProperty() {
-
-		return question;
-	}
-
-	public String getQuestionData() {
-		return question.getValue();
-	}
-
-	public void setQuestionData(String value) {
-		question.set(value);
-	}
-
-	public StringProperty answerProperty() {
-
-		return answer;
-	}
-
-	public String getAnswerData() {
-		return answer.getValue();
-	}
-
-	public void setAnswerData(String value) {
-		answer.set(value);
-	}
+public Node(String data){
+	this.setValue(data);
 	
-//	public Node(String message, Node parent)
-//	{
-//		parent.choices.add(this);
-//		this.answer.setValue(message);
-//	}
-	
-	
-	public Node(String message){
-		answer.setValue(message);
-	}
-	
-	/**
-	 * Default constructor means responsibility for node relations 
-	 * lies on the classes using it
-	 */
-	public Node(){};
+}
 
-	public ArrayList<Node> choices = new ArrayList<Node>();
-
-	/**
-	 * Adds a child to the list of choices
-	 * 
-	 * @param message
-	 */
-	public void addChild(String message) {
-		Node child = new Node();
-		child.setAnswerData(message);
-		child.parent = this;
-		choices.add(child);
-
-	}
+public void setExpanded(){
+	
+}
+	
 
 }
