@@ -4,16 +4,16 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
-import game.Node;
+import game.TextNode;
 
 public class addQuestionEdit implements Edit {
 
-	Node myNode;
+	TextNode myNode;
 	String newData;	
 	String oldData;
 	
 	
-	public addQuestionEdit(Node target, String data) {
+	public addQuestionEdit(TextNode target, String data) {
 		myNode = target;
 		oldData = myNode.getValue();
 		newData = data;

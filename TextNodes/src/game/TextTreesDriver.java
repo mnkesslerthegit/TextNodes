@@ -31,29 +31,27 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
- * Current Goal: traverse nodes
+ * Apologies! Most of the comments are me writing notes to myself about stuff,
+ * and probably aren't helpful.
  * 
  * @author Max
  *
  */
-public class Ask extends Application {
+public class TextTreesDriver extends Application {
 
 	TextField questions = new TextField();
 	TextField answers = new TextField();
 	GridPane grid = new GridPane();
 	Label answerDisplay = new Label();
 	Label questionDisplay = new Label();
-	private static Node myNode = new Node("Start");
+	private static TextNode myNode = new TextNode("Start");
 	private static int childNumber = 0;
-	
+
 	/**
-	 * Instantiate tree view class 
-	 * defined tree item objects
-	 * make one item the root
-	 * add the root to the tree view 
+	 * Instantiate tree view class defined tree item objects make one item the root
+	 * add the root to the tree view
 	 * 
 	 */
-	
 
 	/**
 	 * undo system elements
@@ -70,8 +68,8 @@ public class Ask extends Application {
 	}
 
 	/**
-	 * I'm not sure if these methods should be here. I put them here before I
-	 * made the node class: I needed a place to put a string property when I was
+	 * I'm not sure if these methods should be here. I put them here before I made
+	 * the node class: I needed a place to put a string property when I was
 	 * experimenting with listeners
 	 * 
 	 * @param value
@@ -97,32 +95,31 @@ public class Ask extends Application {
 		Label myLabel = new Label("Start");
 
 		/**
-		 * I tried to make it so the string contained in myNode shows up on in
-		 * the GUI. It didn't work. It stayed with the original node.
+		 * I tried to make it so the string contained in myNode shows up on in the GUI.
+		 * It didn't work. It stayed with the original node.
 		 */
 		// nodeData.textProperty().bind(myNode.dataProperty());
 
-	//	myNode.setQuestionData("Begin Conversation");
+		// myNode.setQuestionData("Begin Conversation");
 
 		// setInput("this somehow works?");
 
 		grid.setPadding(new Insets(10, 10, 10, 10));
 		grid.setVgap(5);
 		grid.setHgap(5);
-	//	grid.borderProperty().set(10);
+		// grid.borderProperty().set(10);
 		GridPane.setHalignment(myLabel, HPos.CENTER);
 		GridPane.setValignment(myLabel, VPos.CENTER);
 		grid.add(questions, 0, 0);
-	//	grid.add(myLabel, 0, 1);
+		// grid.add(myLabel, 0, 1);
 		grid.add(questionDisplay, 0, 2);
 		grid.add(answerDisplay, 0, 3);
 		grid.add(answers, 0, 4);
-		
-		//TreeItem<String> rootItem = new TreeItem<String> ();
-		 TreeView<String> tree = new TreeView<String> (myNode); 
-		 grid.add(tree, 2, 0);
-		
-		
+
+		// TreeItem<String> rootItem = new TreeItem<String> ();
+		TreeView<String> tree = new TreeView<String>(myNode);
+		grid.add(tree, 2, 0);
+
 		// grid.add(new TextField(), 0, 3);
 		Scene scene = new Scene(grid, 300, 300, Color.BLACK);
 		scene.getStylesheets().add("testStyle.css");
@@ -132,47 +129,44 @@ public class Ask extends Application {
 		 */
 		addAnswerAction addAnswer = new addAnswerAction();
 		answers.addEventHandler(ActionEvent.ACTION, addAnswer);
-		
+
 		/**
 		 * add questions
 		 */
 		addQuestionAction addQuestion = new addQuestionAction();
-		questions.addEventHandler(ActionEvent.ACTION,addQuestion);
+		questions.addEventHandler(ActionEvent.ACTION, addQuestion);
 
 		undoManager_ = UndoCollector.INSTANCE;
-		
+
 		/**
-		 * I couln't figure out how undoSupport was supposed to work, 
-		 * so I'm just going have my commands register themselves with the undo manager directly. 
+		 * I couln't figure out how undoSupport was supposed to work, so I'm just going
+		 * have my commands register themselves with the undo manager directly.
 		 */
-		//undoSupport_ = new UndoableEditSupport();
-		//undoSupport_.
+		// undoSupport_ = new UndoableEditSupport();
+		// undoSupport_.
 		// undoSupport_.addUndoableEditListener(new UndoAdapter());
 
-		
-		
 		/*
-		 * this didn't work, because the accelerator map wasn't getting the
-		 * events. I needed to use an event filter instead, and that didn't end
-		 * up using the accelerator map. Something's dumb here.
+		 * this didn't work, because the accelerator map wasn't getting the events. I
+		 * needed to use an event filter instead, and that didn't end up using the
+		 * accelerator map. Something's dumb here.
 		 * 
 		 * scene.getAccelerators().put(new KeyCodeCombination(KeyCode.A,
 		 * KeyCombination.CONTROL_ANY), new Runnable() {
 		 * 
-		 * @Override public void run() { // TODO have this not break command
-		 * design pattern undoManager_.undo(); System.out.println(
-		 * "At least it works");
+		 * @Override public void run() { // TODO have this not break command design
+		 * pattern undoManager_.undo(); System.out.println( "At least it works");
 		 * 
 		 * } });
 		 * 
 		 */
 
 		/*
-		 * // answers.setOnAction((new EventHandler<ActionEvent>() {
-		 * // @Override // public void handle(ActionEvent e) { // //
-		 * label.setText("Accepted"); // System.out.println("I DID IT"); //
-		 * addNode(answers.textProperty().getValue()); // updateDisplay(); // }
-		 * // // public String toString() { // return
+		 * // answers.setOnAction((new EventHandler<ActionEvent>() { // @Override //
+		 * public void handle(ActionEvent e) { // // label.setText("Accepted"); //
+		 * System.out.println("I DID IT"); //
+		 * addNode(answers.textProperty().getValue()); // updateDisplay(); // } // //
+		 * public String toString() { // return
 		 * "I got this to print, to see if I could."; // } // }));
 		 * 
 		 */
@@ -187,36 +181,36 @@ public class Ask extends Application {
 			// + newValue);
 
 			/**
-			 * The following line calls a final method from a local variable.
-			 * The variable will be garbage collected shortly. Apparently, the
-			 * method is lifted from it somehow. Additionally, I can pass local
-			 * variables to a as parameters, but I can't change their values.
-			 * This is because the add listener never sees those variables, only
-			 * their values. Does the same logic apply to the final method?
+			 * (this is just some notes from me trying to understand some stuff)
 			 * 
-			 * Also, the listener we are adding here is an instance of an
-			 * anonymous class. It's generated using a lambda expression
+			 * The following line calls a final method from a local variable. The variable
+			 * will be garbage collected shortly. Apparently, the method is lifted from it
+			 * somehow. Additionally, I can pass local variables to a as parameters, but I
+			 * can't change their values. This is because the add listener never sees those
+			 * variables, only their values. Does the same logic apply to the final method?
+			 * 
+			 * Also, the listener we are adding here is an instance of an anonymous class.
+			 * It's generated using a lambda expression
 			 * 
 			 */
 			myLabel.textProperty().set(newValue);
 			updateDisplay();
-			
+
 			// System.out.println(num);
 			// wtf(num);
 
 		});
 
 		/*
-		 * The following is pointless, and is me experimenting with event
-		 * handlers
+		 * The following is pointless, and is me experimenting with event handlers
 		 * 
 		 * questions.setOnAction(new EventHandler<ActionEvent>() {
 		 * 
-		 * @Override public void handle(ActionEvent e) { //
-		 * label.setText("Accepted"); System.out.println("I DID IT"); }
+		 * @Override public void handle(ActionEvent e) { // label.setText("Accepted");
+		 * System.out.println("I DID IT"); }
 		 * 
-		 * public String toString() { return
-		 * "I got this to print, to see if I could."; } });
+		 * public String toString() { return "I got this to print, to see if I could.";
+		 * } });
 		 * 
 		 */
 
@@ -228,13 +222,13 @@ public class Ask extends Application {
 		// System.out.println(questions.getOnAction());
 
 		/**
-		 * Here I handle commands that aren't related to any textfield, but
-		 * allow the user to navigate between nodes
+		 * Here I handle commands that aren't related to any textfield, but allow the
+		 * user to navigate between nodes
 		 * 
-		 * I changed this from event handler to event filter so that it always
-		 * gets notified. Textfields apparently consume key events, but not all
-		 * of them. Maybe only key pressed events? I don't know. Cause if they
-		 * consumed all the events, it wouldn't have worked at all.
+		 * I changed this from event handler to event filter so that it always gets
+		 * notified. Textfields apparently consume key events, but not all of them.
+		 * Maybe only key pressed events? I don't know. Cause if they consumed all the
+		 * events, it wouldn't have worked at all.
 		 */
 		scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 			@Override
@@ -267,12 +261,12 @@ public class Ask extends Application {
 					System.out.println("yeah, you can undo things maybe");
 					undoManager_.undo();
 				}
-				
-				if(shiftRightCombo.match(event)){
+
+				if (shiftRightCombo.match(event)) {
 					right();
 				}
-				
-				if(shiftLeftCombo.match(event)){
+
+				if (shiftLeftCombo.match(event)) {
 					left();
 				}
 
@@ -288,12 +282,11 @@ public class Ask extends Application {
 	}
 
 	/**
-	 * These inner classes are the commands. The should be able to attach
-	 * themselves to the buttons and stuff. They create edit objects, like
-	 * addAnswer edit, which holds a record that the action occured. I think in
-	 * javafx, they should be event handlers? At first ,I tried making them
-	 * abstract actions, but I didnt' want to use swing, because I heard it was
-	 * old or something.
+	 * These inner classes are the commands. The should be able to attach themselves
+	 * to the buttons and stuff. They create edit objects, like addAnswer edit,
+	 * which holds a record that the action occured. I think in javafx, they should
+	 * be event handlers? At first ,I tried making them abstract actions, but I
+	 * didnt' want to use swing, because I heard it was old or something.
 	 */
 	private class addAnswerAction implements EventHandler<ActionEvent> {
 		// @Override
@@ -325,8 +318,8 @@ public class Ask extends Application {
 			System.out.println("addAnswer action was TRIGGERED: " + answers.getText());
 
 			// perform the operation
-			//myNode.addChild(answers.getText());
-			myNode.getChildren().add(new Node(answers.getText()));
+			// myNode.addChild(answers.getText());
+			myNode.getChildren().add(new TextNode(answers.getText()));
 
 			// put the effect in the list with listeners? couldn't figure this
 			// out
@@ -347,9 +340,8 @@ public class Ask extends Application {
 			System.out.println("addQuestion action happened: " + questions.getText());
 
 			// perform the operation
-			//myNode.questionProperty().set(questions.getText());
+			// myNode.questionProperty().set(questions.getText());
 			myNode.valueProperty().set(questions.getText());
-			
 
 			undoManager_.add(edit);
 
@@ -367,16 +359,16 @@ public class Ask extends Application {
 	// }
 
 	private void addNode(String message) {
-		//myNode.addChild(message);
-		myNode.getChildren().add(new Node(message));
+		// myNode.addChild(message);
+		myNode.getChildren().add(new TextNode(message));
 		System.out.println("Added node. Current number of children: " + myNode.getChildren().size());
 
 	}
 
-	//TODO: Change this so that we see the whole tree
+	// TODO: Change this so that we see the whole tree
 	public void updateDisplay() {
 		String answers = "";
-		//TODO: Is it ok that children are not recognized as Nodes here?
+		// TODO: Is it ok that children are not recognized as Nodes here?
 		for (TreeItem<String> n : myNode.getChildren()) {
 			answers += n.getValue();
 			answers += "     ";
@@ -397,7 +389,6 @@ public class Ask extends Application {
 		childNumber++;
 		System.out.println("Right shift; Child number: " + childNumber);
 
-
 	}
 
 	/**
@@ -405,28 +396,25 @@ public class Ask extends Application {
 	 */
 	public void down() {
 		if (childNumber < myNode.getChildren().size()) {
-			//TODO: Is it ok that there's a cast here?
-			myNode = (Node) myNode.getChildren().get(childNumber);
+			// TODO: Is it ok that there's a cast here?
+			myNode = (TextNode) myNode.getChildren().get(childNumber);
 			System.out.println("Set node to child");
 
 		} else {
 			System.out.println("Could not find child");
 		}
-		
 
 	}
 
 	public void up() {
 		if (myNode.getParent() != null) {
-			myNode = (Node) myNode.getParent();
+			myNode = (TextNode) myNode.getParent();
 			System.out.println("set node to parent");
 		} else {
 			System.out.println("Could not find parent");
 		}
 
 	}
-	
-	
 
 	/**
 	 * currently loads a single node containing dialogue from a text file
@@ -436,7 +424,7 @@ public class Ask extends Application {
 		ObjectInputStream in;
 		try {
 			in = new ObjectInputStream(new FileInputStream("f.txt"));
-			Node s = (Node) in.readObject();
+			TextNode s = (TextNode) in.readObject();
 			// System.out.println(s.chocies.get(0).num);
 			in.close();
 		} catch (IOException e) {
@@ -452,8 +440,8 @@ public class Ask extends Application {
 	 * save the current node
 	 */
 	public static final void save() {
-		Node s1 = new Node("");
-		Node other = new Node("");
+		TextNode s1 = new TextNode("");
+		TextNode other = new TextNode("");
 		// other.num = 8;
 		// other.next = s1;
 		s1.getChildren().add(other);

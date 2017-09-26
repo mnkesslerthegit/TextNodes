@@ -2,11 +2,11 @@ package edits;
 
 
 
-import game.Node;
+import game.TextNode;
 
 public class addAnswerEdit implements Edit {
 
-	Node myNode;
+	TextNode myNode;
 	String data;	
 	int target;
 	
@@ -16,7 +16,7 @@ public class addAnswerEdit implements Edit {
 	 * @param target the index of the of child 
 	 * @param data the child's data
 	 */
-	public addAnswerEdit(Node parent, int target, String data) {
+	public addAnswerEdit(TextNode parent, int target, String data) {
 		myNode = parent;
 		this.target = target;
 		this.data = data;
@@ -35,7 +35,7 @@ public class addAnswerEdit implements Edit {
 	public void redo()// throws CannotRedoException 
 	{
 		//myNode.choices.add(new Node(data));
-		myNode.getChildren().add(new Node(data));
+		myNode.getChildren().add(new TextNode(data));
 	}
 
 	public boolean canUndo() {
