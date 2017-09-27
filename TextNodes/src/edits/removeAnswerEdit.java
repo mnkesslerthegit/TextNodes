@@ -4,16 +4,16 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 
-import game.Node;
+import game.TextNode;
 
 public class removeAnswerEdit implements Edit {
 
-	Node myNode;
+	TextNode myNode;
 	String data;	
 	int target;
 	
 	
-	public removeAnswerEdit(Node parent, int target, String data) {
+	public removeAnswerEdit(TextNode parent, int target, String data) {
 		myNode = parent;
 		this.target = target;
 		this.data = data;
@@ -22,7 +22,7 @@ public class removeAnswerEdit implements Edit {
 
 	public void undo() throws CannotUndoException {
 		
-		myNode.getChildren().add(new Node(data));
+		myNode.getChildren().add(new TextNode(data));
 		
 	}
 

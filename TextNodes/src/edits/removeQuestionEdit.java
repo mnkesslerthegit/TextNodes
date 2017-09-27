@@ -1,16 +1,16 @@
 package edits;
 
 
-import game.Node;
+import game.TextNode;
 
 public class removeQuestionEdit implements Edit {
 
-	Node myNode;
+	TextNode myNode;
 	String data;	
 	
 	boolean question; //true if its a question, false if its an answer
 
-	public removeQuestionEdit(Node target, String data) {
+	public removeQuestionEdit(TextNode target, String data) {
 		myNode = target;
 		
 		this.data = data;

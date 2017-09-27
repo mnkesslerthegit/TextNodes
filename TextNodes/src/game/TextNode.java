@@ -12,20 +12,22 @@ import javafx.scene.control.TreeItem;
 /**
  * Represents one piece of dialogue, and its correspoinding responses
  * Each node holds a question, and the answer that was given to get there. 
+ * 
+ * I tried to modify tree view to expand the way I wanted it to, but I failed. 
+ * Now I'm trying to design my own tree view class that still uses tree items
+ * 
  * @author Max
  *
  */
-public class Node extends TreeItem<String> implements Serializable {
+public class TextNode extends TreeItem<String> implements Serializable {
 	
 
-public Node(String data){
+public TextNode(String data){
 	this.setValue(data);
 	
 }
 
-public void setExpanded(){
-	
-}
+
 	
 
 }
